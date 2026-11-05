@@ -28,7 +28,10 @@
     const target = url(value), key = page(target);
     if (!key) throw Error('Unknown dashboard page: ' + target.pathname);
     target.searchParams.delete('v');
-    const inner = target.hash.slice(1);
+    const rawInner = target.hash.slice(1), split = rawInner.indexOf('?');
+    const inner = split < 0 ? rawInner : rawInner.slice(0, split);
+    if (split >= 0) target.search = rawInner.slice(split);
+    target.searchParams.delete('v');
     const path = key === 'home' ? inner || 'home' : key + (inner ? '/' + inner : '');
     return '#' + path + target.search;
   }
